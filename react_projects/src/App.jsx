@@ -1,6 +1,9 @@
 import { useEffect } from 'react'
 import { useState } from 'react'
 import './App.css'
+import 'bulma/css/bulma.min.css'
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 //1.Hello World App
 /*
@@ -97,7 +100,7 @@ export default App
 */
 
 //4.Search Filter
-
+/*
 function App() {
 
   const [userName, setUserName] = useState('')
@@ -147,6 +150,91 @@ function App() {
       </div>
       
     
+  )
+}
+
+export default App
+*/
+
+//5.Basic Registration Form
+
+const App = ()=>{
+  const[firstName, setFirstName] = useState('')
+  const[lastName, setLastName] = useState('')
+  const[email,  setEmail] = useState('')
+
+  
+
+  const handleFirstName = (e)=>{
+    setFirstName(e.target.value)
+  }
+
+  const handleLastName = (e)=>{
+    setLastName(e.target.value)
+  }
+
+  const handleEmail = (e)=>{
+    setEmail(e.target.value)
+  }
+
+  const handleSubmit = (e)=>{
+    e.preventDefault()
+       
+    if(firstName==='Aziz'&&lastName==='Zulfikorov'&&email==='tokzor123@yahoo.com'){
+      
+       toast.success('The registration is successful.')
+      
+    }
+    else{
+
+        toast.error('The registration has failed')
+    }
+
+    setFirstName('')
+    setLastName('')
+    setEmail('')
+   
+  }
+
+
+  return(
+    <div className='container'>
+      <form onSubmit={handleSubmit}>
+    <input
+    value={firstName}
+    onChange={handleFirstName}
+    className='input is-info'
+    type='text'
+    placeholder='First Name'
+    required
+    style={{margin:5}}
+    />
+    <input
+    value={lastName}
+    onChange={handleLastName}
+    className='input is-info'
+    type='text'
+    placeholder='Last Name'
+    required
+    style={{margin:5}}
+
+    />
+    <input
+    value={email}
+    onChange={handleEmail}
+    className='input is-info'
+    type='text'
+    placeholder='Email'
+    required
+    style={{margin:5}}
+
+    />
+    
+    <button className='button is-success is-fullwidth' style={{margin:5}} type='submit'>Register</button>
+      </form>
+      <ToastContainer />
+    </div>
+   
   )
 }
 

@@ -114,3 +114,9 @@ button{
   color: white;
   font-size: 40px;
 }
+
+.container{
+  height: 250px;
+  width: 700px;
+
+}
