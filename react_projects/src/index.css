@@ -31,7 +31,7 @@ body {
 }
 
 h1 {
-  font-size: 3.2em;
+  font-size: 2em;
   line-height: 1.1;
 }
 
@@ -86,14 +86,14 @@ span{
 
 button{
   border-radius: 50%;
-  width:70px;
+ /* width:70px;
   height:70px;
   background-color: rgb(133, 133, 133);
   border: 2px solid white;
   grid-row: 2/2;
   margin: 20px;
   color: white;
-  font-size: 20px;
+  font-size: 20px;*/
 }
 .buttons{
   display: flex;
@@ -119,4 +119,26 @@ button{
   height: 250px;
   width: 700px;
 
+}
+
+.quiz_container{
+  width:600px;
+  height:300px;
+  background-color: #213652;
+  border-radius: 15px;
+  color: white;
+  font-size: 17px;
+  display: grid;
+  grid-template-columns: 50% 50%;
+}
+
+.quiz_button{
+  width:150px;
+  padding: 10px;
+  margin-top:20px;
+  border-radius: 15px;
+  background-color: rgb(133, 133, 133);
+  border: 2px solid white;
+  color: white;
+  font-size: 20px;
 }

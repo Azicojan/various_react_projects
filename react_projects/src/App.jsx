@@ -158,6 +158,7 @@ export default App
 
 //5.Basic Registration Form
 
+/*
 const App = ()=>{
   const[firstName, setFirstName] = useState('')
   const[lastName, setLastName] = useState('')
@@ -235,6 +236,121 @@ const App = ()=>{
       <ToastContainer />
     </div>
    
+  )
+}
+
+export default App*/
+
+//6.React Quiz App
+
+const App = ()=>{
+  const[random, setRandom]=useState(0)
+  const[points, setPoints]=useState(0)
+  const[rightAnswer, setRightAnswer]=useState('')
+
+  const cityQuiz = [
+    {
+      id:1,
+      question:'What is the capital of France?',
+      answers:['New York', 'London', 'Paris', 'Dublin']
+    },
+    {
+      id:2,
+      question:'What is the capital of Uzbekistan?',
+      answers:['Moscow', 'Tashkent', 'Bishkek', 'Dushanbe']
+    },
+    {
+      id:3,
+      question:'Where is Spain located?',
+      answers:['Asia', 'Africa', 'Europe', 'America']
+    },
+    {
+      id:4,
+      question:'Tbilisi is the capital of ...',
+      answers:['Armenia', 'Azerbaijan', 'Chechnya', 'Georgia']
+    },
+    {
+      id:5,
+      question:'Where is New York located?',
+      answers:['USA', 'Canada', 'Australia', 'New Zealand']
+    },
+    
+  ]
+
+  useEffect(()=>{
+    if(random===0){
+      setRightAnswer('Paris')
+    }
+    
+    else if(random===1){
+      setRightAnswer('Tashkent')
+    }
+         
+    else if(random===2){
+      setRightAnswer('Europe')
+    }
+         
+    else if(random===3){
+      setRightAnswer('Georgia')
+    }
+
+    else if(random===4){
+      setRightAnswer('USA')
+    }
+  },[random])
+  
+
+  const handleQuestion = (event)=>{
+    
+    const randomNumber = Math.floor(Math.random()*cityQuiz.length);
+
+    const buttonContent = event.target.textContent;
+   // console.log('Clicked button text:', buttonContent)
+        
+      
+      if(buttonContent===rightAnswer){
+        setPoints(points+5)
+      }     
+
+     setRandom(randomNumber)
+  }
+
+  let questionList = cityQuiz.map((quiz)=>quiz.question)
+  //console.log(questionList)
+
+ let answersList = cityQuiz.map((quiz)=>quiz.answers)
+// console.log(rightAnswer)
+ 
+ 
+
+  return(
+    <div className='quiz_container'>
+      <div>
+         <h2 style={{marginTop:30,fontSize:25}}>Question {random+1}/5</h2>
+         <ul>
+          <li style={{marginTop:40}}>{questionList[random]}</li>
+         </ul><br/><br/>
+                  
+         <p>
+          You've scored: {points} points.
+         </p>
+         <button className='quiz_button' onClick={()=>setPoints(0)}>reset</button>
+      </div>
+
+
+      <div>
+        <ul>
+
+        <li><button onClick={handleQuestion} className='quiz_button'>{answersList[random][0]}</button></li>
+        <li><button onClick={handleQuestion} className='quiz_button'>{answersList[random][1]}</button></li>
+        <li><button onClick={handleQuestion} className='quiz_button'>{answersList[random][2]}</button></li>
+        <li><button onClick={handleQuestion} className='quiz_button'>{answersList[random][3]}</button></li>
+           
+       </ul>      
+      </div>
+      
+      
+    </div>
   )
 }
 
