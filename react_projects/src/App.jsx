@@ -242,6 +242,44 @@ const App = ()=>{
 export default App*/
 
 //6.React Quiz App
+const QuestionsPart = (props)=>{
+
+  const{random,questionList,points} = props
+  
+
+  return(
+    
+      <div>
+         <h2 style={{marginTop:30,fontSize:25}}>Question {random+1}/5</h2>
+         <ul>
+          <li style={{marginTop:40}}>{questionList[random]}</li>
+         </ul><br/><br/>
+                  
+         <p>
+          You've scored: {points} points.
+         </p>
+         
+      </div>
+   
+  )
+}
+
+const AnswersPart = ({random,handleQuestion,answersList})=>{
+
+  return(
+     <div>
+        <ul>
+
+        <li><button onClick={handleQuestion} className='quiz_button'>{answersList[random][0]}</button></li>
+        <li><button onClick={handleQuestion} className='quiz_button'>{answersList[random][1]}</button></li>
+        <li><button onClick={handleQuestion} className='quiz_button'>{answersList[random][2]}</button></li>
+        <li><button onClick={handleQuestion} className='quiz_button'>{answersList[random][3]}</button></li>
+           
+       </ul>      
+      </div>
+
+  )
+}
 
 const App = ()=>{
   const[random, setRandom]=useState(0)
@@ -310,47 +348,40 @@ const App = ()=>{
       
       if(buttonContent===rightAnswer){
         setPoints(points+5)
-      }     
+      }
+      
+      if(randomNumber===random&&randomNumber<5){
+        setRandom(randomNumber+1)
+      }
+      else if(randomNumber===random&&randomNumber===5){
+        setRandom(randomNumber-1)
+      }
+      else{
+        setRandom(randomNumber)
+      }
 
-     setRandom(randomNumber)
+     
   }
 
   let questionList = cityQuiz.map((quiz)=>quiz.question)
-  //console.log(questionList)
+   //console.log(questionList)
 
- let answersList = cityQuiz.map((quiz)=>quiz.answers)
-// console.log(rightAnswer)
+  let answersList = cityQuiz.map((quiz)=>quiz.answers)
+  // console.log(rightAnswer)
  
  
 
   return(
+    
     <div className='quiz_container'>
       <div>
-         <h2 style={{marginTop:30,fontSize:25}}>Question {random+1}/5</h2>
-         <ul>
-          <li style={{marginTop:40}}>{questionList[random]}</li>
-         </ul><br/><br/>
-                  
-         <p>
-          You've scored: {points} points.
-         </p>
-         <button className='quiz_button' onClick={()=>setPoints(0)}>reset</button>
+        <QuestionsPart random={random} questionList={questionList} points={points}/>
+        <button className='quiz_button'onClick={()=>setPoints(0)}>reset</button>
       </div>
-
-
-      <div>
-        <ul>
-
-        <li><button onClick={handleQuestion} className='quiz_button'>{answersList[random][0]}</button></li>
-        <li><button onClick={handleQuestion} className='quiz_button'>{answersList[random][1]}</button></li>
-        <li><button onClick={handleQuestion} className='quiz_button'>{answersList[random][2]}</button></li>
-        <li><button onClick={handleQuestion} className='quiz_button'>{answersList[random][3]}</button></li>
-           
-       </ul>      
-      </div>
+        <AnswersPart random={random} handleQuestion={handleQuestion} answersList={answersList}/>
       
-      
-    </div>
+    </div>      
+    
   )
 }
 
