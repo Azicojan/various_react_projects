@@ -1,0 +1,171 @@
+
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin: 0;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.navbar{
+    color:white;
+    font-size: larger;
+    width:100%;
+    height: 6em;
+    background-color: rgb(98, 70, 199);
+    display: grid;
+    align-items: center;
+    position: relative;
+    grid-template-columns: 35% 35% 10% 21%; 
+    column-gap: 3%;   
+
+}
+
+.react_title{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    
+}
+
+h3{
+   display: inline-block;
+   text-align: center;
+   cursor:pointer;
+}
+
+
+
+
+
+
+
+button{
+    
+    padding: 0.6em;
+    background-color:  rgb(50, 222, 235);
+    border-style: none;
+    border-radius: 5px;
+    color:white;
+    font-size: 17px;
+    
+    
+    
+}
+
+button:hover{
+    background-color: rgb(28, 157, 167);
+    cursor:pointer;
+    transition:0.5s;
+}
+
+.link{
+    background-color: rgb(98, 70, 199);
+}
+
+.link:hover{
+    background-color: rgb(138, 138, 221);
+    transition:0.5s;
+}
+
+.signup{
+  padding: 0.6em;
+  background-color:  rgb(50, 222, 235);
+  border-style: none;
+  border-radius: 5px;
+  color:white;
+  font-size:17px;
+}
+
+.signup:hover{
+  background-color: rgb(28, 157, 167);
+  cursor: pointer;
+  transition: 0.5s;
+}
+
+.fa-brands.fa-react{
+  margin-left: 1em;
+  font-size: larger;
+}
+
+.fa-solid.fa-bars{
+  font-size: larger;
+}
+
+.fa-solid.fa-xmark{
+  font-size: larger;
+}
+
+.hamburger{
+  display:none
+}
+  
+.links{
+  display:flex;
+  justify-content: center;
+  gap:2em;
+  
+}
+.linkshidden,
+.signuphidden {
+ display: none;
+}
+    
+
+    
+
+@media only screen and (max-width:768px){
+    
+    .links,.signup{
+      display: none;
+    } 
+
+
+    .linkshidden,
+    .signuphidden {
+     display: none;
+    }
+    
+
+    .linksshown{
+      background-color: rgb(105, 86, 173);
+      width:100%;
+      height:23em;
+      display: grid;
+      grid-template-rows: auto auto auto auto auto;
+      border-radius: 0 0 5px 5px;
+      align-items: center;
+      animation: 0.8s ease-out dropdown;
+      
+    }
+
+    @keyframes dropdown{
+      from{
+        transform: translateX(-100%);
+      }
+      to{
+        transform: translateX(0);
+      }
+    }
+
+    .signupshown{
+     width:100%;
+    
+    }
+
+    .hamburger{
+      display:block;
+      grid-column: 4;
+      
+    }
+
+    .link{
+      background-color: rgb(105, 86, 173);
+      height: 100%;
+  }
+         
+
+  }
