@@ -1,9 +1,10 @@
-import { useEffect } from 'react'
+//import { useEffect } from 'react'
 import { useState } from 'react'
 import './App.css'
 import 'bulma/css/bulma.min.css'
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+//import { toast, ToastContainer } from 'react-toastify';
+//import 'react-toastify/dist/ReactToastify.css';
+
 
 //1.Hello World App
 /*
@@ -239,9 +240,10 @@ const App = ()=>{
   )
 }
 
-export default App*/
+export default App
 
 //6.React Quiz App
+
 const QuestionsPart = (props)=>{
 
   const{random,questionList,points} = props
@@ -382,6 +384,56 @@ const App = ()=>{
       
     </div>      
     
+  )
+}
+
+export default App*/
+
+//9.Todo List 
+
+const App = () => {
+  const [task, setTask]= useState('')
+  const [tasksArray, setTaskArray] = useState([])
+  const [taskId, setTaskId] = useState(0)
+
+    
+  const addTask = (e) => {
+    e.preventDefault()
+    setTaskId(taskId + 1)
+    setTaskArray([...tasksArray,{id:taskId, task: task}])
+    setTask('')
+    
+  }
+
+  const deleteTask = (id) => {
+    setTaskArray((oldValues) => {
+       return oldValues.filter(task => task.id !== id)
+    })
+  
+  }
+  //console.log(taskArray)
+  
+
+  return(
+    <div>
+      <h1>Todo list</h1>
+      <form onSubmit={addTask}>
+        <input
+         type='text'
+         value={task}
+         onChange={(e) => setTask(e.target.value)}
+        />
+        <button>add a task</button>
+
+      </form>
+      <ul>
+        {tasksArray.map((task)=>(
+        <li key={task.id}>
+          {task.task}
+          <button onClick={()=>deleteTask(task.id)}>delete</button></li>))}
+      </ul>
+
+    </div>
   )
 }
 
