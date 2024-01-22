@@ -2,6 +2,8 @@
 import { useState } from 'react'
 import './App.css'
 import 'bulma/css/bulma.min.css'
+/* eslint-disable react/prop-types */
+
 //import { toast, ToastContainer } from 'react-toastify';
 //import 'react-toastify/dist/ReactToastify.css';
 
@@ -390,16 +392,31 @@ const App = ()=>{
 export default App*/
 
 //9.Todo List 
+const TasksToDo = ({tasksArray, deleteTask}) => {
+  //const{tasksArray, deleteTask} = props
+ 
+
+  return(
+    <>
+    <ul>
+        {tasksArray.map((task)=>(
+        <li key={task.id}>
+          {task.task}
+          <button onClick={()=>deleteTask(task.id)}>delete</button></li>))}
+      </ul>
+    </>
+  )
+}
 
 const App = () => {
   const [task, setTask]= useState('')
   const [tasksArray, setTaskArray] = useState([])
   const [taskId, setTaskId] = useState(0)
 
-    
+     
   const addTask = (e) => {
     e.preventDefault()
-    setTaskId(taskId + 1)
+    setTaskId(() => taskId + 1)
     setTaskArray([...tasksArray,{id:taskId, task: task}])
     setTask('')
     
@@ -411,6 +428,7 @@ const App = () => {
     })
   
   }
+  
   //console.log(taskArray)
   
 
@@ -426,12 +444,7 @@ const App = () => {
         <button>add a task</button>
 
       </form>
-      <ul>
-        {tasksArray.map((task)=>(
-        <li key={task.id}>
-          {task.task}
-          <button onClick={()=>deleteTask(task.id)}>delete</button></li>))}
-      </ul>
+      <TasksToDo tasksArray={tasksArray} deleteTask={deleteTask}/>
 
     </div>
   )
