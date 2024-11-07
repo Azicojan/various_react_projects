@@ -1132,7 +1132,7 @@ const App = () => {
 };
 
 export default App;
-*/
+
 
 const App = () => {
   const [name, setName] = useState("");
@@ -1179,6 +1179,61 @@ const App = () => {
         ))}
       </ul>
     </div>
+  );
+};
+
+export default App;
+
+
+const App = () => {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(() => window.innerWidth);
+      console.log("Window is resized.");
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+  return <div>{windowWidth}</div>;
+};
+
+export default App;
+*/
+
+const App = () => {
+  const [count, setCount] = useState(0);
+
+  const randomColor = () =>
+    "#" + Math.floor(Math.random() * 16777215).toString(16);
+
+  useEffect(() => {
+    const changeColor = (color) => {
+      const elem = document.getElementById("color_change");
+      elem.style.backgroundColor = color;
+    };
+    if (count === 0) {
+      changeColor("white");
+    } else if (count % 5 === 0) {
+      changeColor(randomColor());
+    }
+  }, [count]);
+
+  return (
+    <>
+      <div id="color_change" style={{ padding: "20px", fontSize: "24px" }}>
+        {count}
+      </div>
+      <br />
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+      <br />
+      <button onClick={() => setCount(0)}>Reset</button>
+    </>
   );
 };
 
