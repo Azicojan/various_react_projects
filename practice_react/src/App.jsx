@@ -1204,7 +1204,7 @@ const App = () => {
 };
 
 export default App;
-*/
+
 
 const App = () => {
   const [count, setCount] = useState(0);
@@ -1234,6 +1234,44 @@ const App = () => {
       <br />
       <button onClick={() => setCount(0)}>Reset</button>
     </>
+  );
+};
+
+export default App;
+*/
+
+const App = () => {
+  const [opacity, setOpacity] = useState(1);
+  const [isFading, setIsFading] = useState(false);
+
+  useEffect(() => {
+    if (!isFading || opacity <= 0) return;
+
+    const intervalId = setInterval(() => {
+      setOpacity((prev) => {
+        if (prev <= 0.1) {
+          setIsFading(false);
+          return 0;
+        }
+        return prev - 0.1;
+      });
+    }, 200);
+    return () => clearInterval(intervalId);
+  }, [isFading, opacity]);
+
+  const handleClick = () => {
+    setOpacity(1);
+    setIsFading(true);
+  };
+
+  return (
+    <div>
+      <p id="change_opacity" style={{ opacity }}>
+        Hello.My name is Zafar and I'm eleven years old.
+      </p>
+      <br />
+      <button onClick={handleClick}>Click to fade</button>
+    </div>
   );
 };
 
