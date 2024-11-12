@@ -1238,7 +1238,7 @@ const App = () => {
 };
 
 export default App;
-*/
+
 
 const App = () => {
   const [opacity, setOpacity] = useState(1);
@@ -1251,7 +1251,7 @@ const App = () => {
       setOpacity((prev) => {
         if (prev <= 0.1) {
           setIsFading(false);
-          return 0;
+          return 1;
         }
         return prev - 0.1;
       });
@@ -1260,7 +1260,7 @@ const App = () => {
   }, [isFading, opacity]);
 
   const handleClick = () => {
-    setOpacity(1);
+    // setOpacity(1);
     setIsFading(true);
   };
 
@@ -1276,3 +1276,161 @@ const App = () => {
 };
 
 export default App;
+
+
+const App = () => {
+  const [count, setCount] = useState(10);
+  const [isCounting, setIsCounting] = useState(false);
+  const [message, setMessage] = useState(null);
+
+  useEffect(() => {
+    if (!isCounting) return;
+
+    const intervalId = setInterval(() => {
+      setCount((prevCount) => {
+        if (prevCount === 0) {
+          setIsCounting(false);
+          setMessage("Time's up!");
+          setTimeout(() => setMessage(null), 3000);
+          return 10;
+        }
+        return prevCount - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [isCounting]);
+
+  const handleCounting = () => {
+    setIsCounting(true);
+  };
+
+  //console.log(count);
+
+  return (
+    <div>
+      <div>
+        <h3>{message}</h3>
+      </div>
+      {count}
+      <br />
+      <button onClick={handleCounting} disabled={isCounting}>
+        Start
+      </button>
+    </div>
+  );
+};
+
+export default App;
+
+
+const App = () => {
+  const [isToggling, setIsToggling] = useState(false);
+  const [bgColor, setBgColor] = useState("white");
+
+  useEffect(() => {
+    if (!isToggling) return;
+
+    const intervalId = setInterval(() => {
+      setBgColor((prevColor) =>
+        prevColor === "lightblue" ? "lightcoral" : "lightblue"
+      );
+    }, 2000);
+
+    return () => clearInterval(intervalId);
+  }, [isToggling]);
+
+  const handleStart = () => {
+    setIsToggling(true);
+  };
+
+  const handleStop = () => {
+    setIsToggling(false);
+    setBgColor("white");
+  };
+
+  return (
+    <div style={{ backgroundColor: bgColor, height: "100vh" }}>
+      <button onClick={handleStart} disabled={isToggling}>
+        Start
+      </button>
+      <button onClick={handleStop} disabled={!isToggling}>
+        Stop
+      </button>
+    </div>
+  );
+};
+
+export default App;
+*/
+
+const RandomUser = () => {
+  const [user, setUser] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  const fetchUser = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      axios
+        .get("https://randomuser.me/api/")
+        .then((response) => {
+          console.log(response.data.results);
+          const userData = response.data.results;
+          setUser((prevUser) => [
+            ...prevUser,
+            {
+              id: userData[0].login.uuid,
+              firstName: userData[0].name.first,
+              lastName: userData[0].name.last,
+              email: userData[0].email,
+              profile: userData[0].picture.medium,
+            },
+          ]);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+          setIsLoading(false);
+        });
+    }, 1500);
+  };
+
+  const deleteUser = (userId) => {
+    setUser((pervUser) => pervUser.filter((user) => user.id !== userId));
+  };
+
+  console.log(user);
+
+  return (
+    <div>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <>
+          <ul style={{ listStyleType: "decimal" }}>
+            {user.map((user) => (
+              <li key={user.id}>
+                {user.firstName} {user.lastName}
+                <br />
+                {user.email}
+                <br />
+                <img
+                  src={user.profile}
+                  alt={`${user.firstName} ${user.lastName}`}
+                />
+                <button onClick={() => deleteUser(user.id)}>Delete</button>
+              </li>
+            ))}
+          </ul>
+          <button onClick={() => fetchUser()}>Fetch New User</button>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default RandomUser;
