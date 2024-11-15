@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import "./App.css";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 /*
 function App() {
@@ -1362,7 +1363,7 @@ const App = () => {
 };
 
 export default App;
-*/
+
 
 const RandomUser = () => {
   const [user, setUser] = useState([]);
@@ -1434,3 +1435,110 @@ const RandomUser = () => {
 };
 
 export default RandomUser;
+*/
+
+const TopNews = () => {
+  const [articles, setArticles] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetchNews(controller.signal);
+
+    return () => {
+      console.log("Component unmounting, canceling request...");
+      controller.abort();
+    };
+  }, []);
+
+  const fetchNews = (signal) => {
+    setIsLoading(true);
+    setTimeout(() => {
+      axios
+        .get(
+          "https://newsapi.org/v2/top-headlines?country=us&apiKey=22f3ab1ffb0d4633b8b86cd576a8b045",
+          { signal }
+        )
+        .then((response) => {
+          // console.log(response);
+          const fetched = response.data.articles;
+          setArticles(fetched);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          if (axios.isCancel(error)) {
+            console.log("Request cancelled:", error.message);
+          } else {
+            setError("Failed to fetch news. Please try again later.");
+            console.error("Request failed", error);
+          }
+
+          setIsLoading(false);
+        });
+    }, 1500);
+  };
+  console.log(articles);
+
+  return (
+    <div>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <>
+          <ul style={{ listStyleType: "decimal" }}>
+            {articles.map((news, index) => (
+              <li
+                key={index}
+                style={{ border: "solid", marginBottom: 5, borderRadius: 20 }}
+              >
+                <h4>{news.title}</h4>
+                <br />
+                {news.description}
+                <br />
+                {news.source.name}
+                <br />
+                {new Date(news.publishedAt).toLocaleDateString("en-US", {
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+                <br />
+                <a href={news.url} target="_blank" rel="noopener noreferrer">
+                  Read More
+                </a>
+                <br />
+                {news.urlToImage && (
+                  <img
+                    src={news.urlToImage}
+                    alt={news.title}
+                    style={{ width: 500, height: 350 }}
+                  />
+                )}
+              </li>
+            ))}
+          </ul>
+          <button onClick={() => fetchNews(new AbortController().signal)}>
+            Refresh News
+          </button>
+        </>
+      )}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+    </div>
+  );
+};
+
+const App = () => {
+  const [showNews, setShowNews] = useState(true);
+
+  return (
+    <div>
+      <button onClick={() => setShowNews(!showNews)}>
+        Toggle News Component
+      </button>
+      {showNews && <TopNews />}
+    </div>
+  );
+};
+
+export default App;
