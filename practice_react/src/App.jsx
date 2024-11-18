@@ -1,7 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import "./App.css";
 import axios from "axios";
-import { Link } from "react-router-dom";
 
 /*
 function App() {
@@ -1435,7 +1434,7 @@ const RandomUser = () => {
 };
 
 export default RandomUser;
-*/
+
 
 const TopNews = () => {
   const [articles, setArticles] = useState([]);
@@ -1542,3 +1541,89 @@ const App = () => {
 };
 
 export default App;
+*/
+
+const WeatherInfo = () => {
+  const [weatherData, setWeatherData] = useState(null);
+  const [city, setCity] = useState("");
+  const [queryCity, setQueryCity] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (!queryCity) return;
+
+    setIsLoading(true);
+    const controller = new AbortController();
+
+    setTimeout(() => {
+      axios
+        .get(
+          `https://api.openweathermap.org/data/2.5/weather?q=${queryCity}&appid=82e1d3407191040b5b78e5fc639031b4&units=metric`,
+          { signal: controller.signal }
+        )
+        .then((response) => {
+          console.log(response);
+          setWeatherData({
+            cityName: response.data.name,
+            temperature: response.data.main.temp,
+            description: response.data.weather[0].description,
+            humidity: response.data.main.humidity,
+          });
+          setError("");
+          setCity("");
+        })
+        .catch((error) => {
+          if (error.name === "CanceledError") return;
+          setError(
+            "Failed to fetch the weather forecast. Please try again later."
+          );
+        })
+        .finally(() => setIsLoading(false));
+    }, 1000);
+
+    return () => controller.abort();
+  }, [queryCity]);
+
+  // console.log(weatherData);
+  // console.log(city);
+
+  const handleCity = (e) => {
+    setCity(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const trimmedCity = city.trim();
+
+    if (trimmedCity) {
+      setQueryCity(trimmedCity);
+      setError("");
+    } else {
+      setError("Please enter a valid city name.");
+    }
+  };
+  return (
+    <div>
+      <form onSubmit={handleSubmit}>
+        <label>City:</label>
+        <input type="text" value={city} onChange={handleCity} required /> <br />
+        <button type="submit" style={{ marginTop: 10 }} disabled={isLoading}>
+          {isLoading ? "Loading..." : "Fetch Weather"}
+        </button>
+      </form>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {weatherData && (
+        <ul style={{ listStyle: "none" }}>
+          <li>City: {weatherData.cityName}</li>
+          <br />
+          <li>Temperature: {weatherData.temperature}&#8451;</li> <br />
+          <li>Description: {weatherData.description}</li> <br />
+          <li>Humidity: {weatherData.humidity}%</li>
+        </ul>
+      )}
+    </div>
+  );
+};
+
+export default WeatherInfo;
