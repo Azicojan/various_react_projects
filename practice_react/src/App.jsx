@@ -1541,7 +1541,7 @@ const App = () => {
 };
 
 export default App;
-*/
+
 
 const WeatherInfo = () => {
   const [weatherData, setWeatherData] = useState(null);
@@ -1627,3 +1627,66 @@ const WeatherInfo = () => {
 };
 
 export default WeatherInfo;
+
+
+const Card = ({ greeting, changeGreeting }) => {
+  return (
+    <div
+      style={{
+        border: "1px solid black",
+        padding: "10px",
+        borderRadius: "5px",
+      }}
+    >
+      {greeting}
+      <br />
+      <button onClick={changeGreeting}>Change</button>
+    </div>
+  );
+};
+
+const App = () => {
+  const [greeting, setGreeting] = useState("Hello, how are you?");
+  const [toggle, setToggle] = useState(true);
+
+  const changeGreeting = () => {
+    //const newToggle = !toggle;
+    // setToggle(newToggle); // Update toggle state
+    // setGreeting(newToggle ? "Hey, how is it going?" : "Hello, how are you?");
+
+    setToggle((prevToggle) => {
+      const newToggle = !prevToggle;
+      setGreeting(newToggle ? "Hey, how is it going?" : "What's up?");
+      return newToggle;
+    });
+  };
+  console.log(toggle);
+
+  return <Card greeting={greeting} changeGreeting={changeGreeting} />;
+};
+
+export default App;
+*/
+function Card({ children }) {
+  return (
+    <div
+      style={{
+        border: "1px solid black",
+        padding: "10px",
+        borderRadius: "5px",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <Card>
+      <h1>Hello, World!</h1>
+      <p>This is some content inside the Card component.</p>
+    </Card>
+  );
+}
+export default App;
