@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useCallback, useEffect, useRef } from "react";
 import "./App.css";
 import axios from "axios";
@@ -1666,7 +1667,7 @@ const App = () => {
 };
 
 export default App;
-*/
+
 function Card({ children }) {
   return (
     <div
@@ -1689,4 +1690,273 @@ function App() {
     </Card>
   );
 }
+export default App;
+
+
+const Button = ({ children, onClick, type = "button" }) => {
+  return (
+    <button
+      type={type}
+      onClick={onClick}
+      style={{ padding: "10px", backgroundColor: "blue", color: "white" }}
+    >
+      {children}
+    </button>
+  );
+};
+
+const App = () => {
+  return (
+    <div>
+      <Button onClick={() => alert("Button clicked")}>Click me</Button>
+      <Button type="submit">Submit</Button>
+    </div>
+  );
+};
+
+export default App;
+
+
+const Wrapper = ({ children, toggle }) => {
+  return (
+    <div
+      style={{
+        border: "2px solid",
+        backgroundColor: toggle ? "lightblue" : "lightgreen",
+        padding: "10px",
+        borderRadius: "15px",
+      }}
+    >
+      {children}
+    </div>
+  );
+};
+
+const Button = ({ children, changeBackground }) => {
+  return (
+    <button onClick={changeBackground} title="Toggle Background">
+      {children}
+    </button>
+  );
+};
+
+const App = () => {
+  const [toggle, setToggle] = useState(true);
+
+  const changeBackground = () => {
+    setToggle(!toggle);
+  };
+  return (
+    <div>
+      <Wrapper toggle={toggle}>
+        <h1>Hello, World!</h1>
+        <p>This is a paragraph inside the wrapper.</p>
+        <ul>
+          <li>Item 1</li>
+          <li>Item 2</li>
+        </ul>
+        <Button changeBackground={changeBackground}>Click me</Button>
+      </Wrapper>
+    </div>
+  );
+};
+
+export default App;
+
+
+const Counter = () => {
+  const count = useRef(0);
+
+  const increment = () => {
+    count.current += 1;
+    console.log(count.current);
+  };
+
+  return (
+    <div>
+      <button onClick={increment}>Increment</button>
+    </div>
+  );
+};
+
+const PreviousValue = () => {
+  const [value, setValue] = useState("");
+  const previousValue = useRef("");
+
+  useEffect(() => {
+    previousValue.current = value;
+  });
+
+  console.log(previousValue);
+  return (
+    <div>
+      <input value={value} onChange={(e) => setValue(e.target.value)} />
+      <p>Current: {value}</p>
+      <p>Previous: {previousValue.current}</p>
+    </div>
+  );
+};
+
+const AnimatedBox = () => {
+  const boxRef = useRef(null);
+
+  const animate = () => {
+    boxRef.current.style.transform = "translateX(100px)";
+    boxRef.current.style.transition = "transform 0.5s";
+  };
+
+  return (
+    <div>
+      <div
+        ref={boxRef}
+        style={{ width: "100px", height: "100px", background: "blue" }}
+      ></div>
+      <button onClick={animate}>Animate</button>
+    </div>
+  );
+};
+
+const Timer = () => {
+  const count = useRef(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      count.current += 1;
+      console.log(count.current);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return <div>Check the console for updates!</div>;
+};
+
+const TrackScroll = () => {
+  const scrollPosition = useRef();
+
+  const handleScroll = () => {
+    scrollPosition.current = window.scrollY;
+    console.log(scrollPosition.current);
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return (
+    <div style={{ height: "200vh" }}>Scroll to see updates in the console.</div>
+  );
+};
+
+const App = () => {
+  const inputRef = useRef(null);
+
+  const handleFocus = () => {
+    inputRef.current.focus();
+  };
+
+  return (
+    <div>
+      <input
+        ref={inputRef}
+        type="text"
+        placeholder="Type something here..."
+        onFocus={() => console.log("Input is focused!")}
+      />
+      <button onClick={handleFocus}>Focus Input</button>
+        <Counter />
+      <PreviousValue />
+  <AnimatedBox />
+  <Timer />
+      <TrackScroll />
+    </div>
+  );
+};
+
+export default App;
+
+
+const App = () => {
+  const [second, setSecond] = useState(0);
+  const intervalRef = useRef(null);
+
+  const startTimer = () => {
+    if (!intervalRef.current) {
+      intervalRef.current = setInterval(() => {
+        setSecond((prev) => prev + 1);
+      }, 1000);
+    }
+    console.log(second);
+  };
+
+  const stopTimer = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    console.log(second);
+  };
+
+  const resetTimer = () => {
+    stopTimer();
+    setSecond(0);
+  };
+
+  return (
+    <div>
+      {second} s<br />
+      <button onClick={startTimer}>Start</button>
+      <br />
+      <button onClick={stopTimer}>Stop</button>
+      <br />
+      <button onClick={resetTimer}>Reset</button>
+    </div>
+  );
+};
+
+export default App;
+*/
+
+const App = () => {
+  const inputElement = useRef();
+
+  const focusInput = () => {
+    inputElement.current.focus();
+    console.log(inputElement);
+  };
+
+  const selectInput = () => {
+    inputElement.current.select();
+    // console.log(inputElement.current);
+  };
+
+  const clearInput = () => {
+    inputElement.current.value = "";
+  };
+
+  return (
+    <div>
+      <input
+        type="text"
+        ref={inputElement}
+        placeholder="Type something..."
+        onFocus={() => console.log("Input is focused!")}
+      />
+      <br />
+      <button onClick={focusInput} style={{ margin: "5px", padding: "5px" }}>
+        Focus Input
+      </button>
+      <br />
+      <button onClick={selectInput} style={{ margin: "5px", padding: "5px" }}>
+        Select Input
+      </button>
+      <br />
+      <button onClick={clearInput} style={{ margin: "5px", padding: "5px" }}>
+        Clear Input
+      </button>
+    </div>
+  );
+};
+
 export default App;
