@@ -1,5 +1,13 @@
 import React from "react";
-import { useState, useCallback, useEffect, useRef } from "react";
+import {
+  useState,
+  useCallback,
+  useEffect,
+  useRef,
+  memo,
+  createContext,
+  useContext,
+} from "react";
 import "./App.css";
 import axios from "axios";
 
@@ -1916,7 +1924,7 @@ const App = () => {
 };
 
 export default App;
-*/
+
 
 const App = () => {
   const inputElement = useRef();
@@ -1955,6 +1963,553 @@ const App = () => {
       <button onClick={clearInput} style={{ margin: "5px", padding: "5px" }}>
         Clear Input
       </button>
+    </div>
+  );
+};
+
+export default App;
+
+
+const App = () => {
+  const [second, setSecond] = useState(0);
+  const [minute, setMinute] = useState(0);
+  const [hour, setHour] = useState(0);
+
+  const count = useRef(0);
+
+  const startTimer = () => {
+    if (!count.current) {
+      count.current = setInterval(() => {
+        setSecond((prev) => prev + 1);
+      }, 1000);
+    }
+  };
+
+  const pauseTimer = () => {
+    if (count.current) {
+      clearInterval(count.current);
+      count.current = null;
+    }
+  };
+
+  const resetTimer = () => {
+    pauseTimer();
+    setSecond(0);
+    setMinute(0);
+    setHour(0);
+  };
+
+  useEffect(() => {
+    if (second === 60) {
+      setMinute((prev) => prev + 1);
+      setSecond(0);
+    }
+  }, [second]);
+
+  useEffect(() => {
+    if (minute === 60) {
+      setHour((prev) => prev + 1);
+      setMinute(0);
+    }
+  }, [minute]);
+
+  useEffect(() => {
+    return () => {
+      if (count.current) {
+        clearInterval(count.current);
+      }
+    };
+  }, []);
+
+  const formatTime = (value) => (value < 10 ? "0" + value : value);
+
+  // console.log(count);
+  // console.log(second);
+
+  return (
+    <div>
+      <h2>Stop Watch</h2>
+      {formatTime(hour)} h: {formatTime(minute)} m: {formatTime(second)}s <br />
+      <button onClick={startTimer} style={{ margin: "5px", padding: "5px" }}>
+        Start
+      </button>
+      <br />
+      <button onClick={pauseTimer} style={{ margin: "5px", padding: "5px" }}>
+        Pause
+      </button>
+      <br />
+      <button
+        onClick={resetTimer}
+        style={{ margin: "5px", padding: "5px" }}
+        disabled={second === 0 && minute === 0 && hour === 0}
+      >
+        Reset
+      </button>
+      <br />
+    </div>
+  );
+};
+
+export default App;
+
+
+const App = () => {
+  const inputRefs = [useRef(null), useRef(null), useRef(null)];
+  let currentFocusIndex = 0;
+
+  const focusOn = (e) => {
+    e.preventDefault();
+    currentFocusIndex = (currentFocusIndex + 1) % inputRefs.length;
+    inputRefs[currentFocusIndex].current.focus();
+  };
+
+  return (
+    <div>
+      <form>
+        <label>First Name: </label>
+        <input
+          type="text"
+          ref={inputRefs[0]}
+          placeholder="Type something here..."
+
+          //style={{ backgroundColor: isFocused ? "antiquewhite" : "white" }}
+        />
+        <br />
+        <label>Last Name: </label>
+        <input
+          type="text"
+          ref={inputRefs[1]}
+          placeholder="Type something here..."
+
+          //style={{ backgroundColor: isFocused ? "lightblue" : "white" }}
+        />
+        <br />
+        <label>Email: </label>
+        <input
+          type="email"
+          ref={inputRefs[2]}
+          placeholder="Type something here..."
+
+          //style={{ backgroundColor: isFocused ? "lightgreen" : "white" }}
+        />
+      </form>
+
+      <br />
+      <button onClick={focusOn} style={{ margin: "15px", padding: "10px" }}>
+        Focus Next
+      </button>
+    </div>
+  );
+};
+
+export default App;
+
+import Me2022 from "./assets/Me2022.jpg";
+import Mukaddam2022 from "./assets/Mukaddam2022.jpg";
+import Sarvinozik2022 from "./assets/Sarvinozik2022.jpg";
+
+const App = () => {
+  const images = [Me2022, Mukaddam2022, Sarvinozik2022];
+  const imageRefs = useRef(images.map(() => React.createRef()));
+  const currentIndex = useRef(0);
+
+  const getNextIndex = (currentIndex, length) => (currentIndex + 1) % length;
+
+  const getPrevIndex = (currentIndex, length) =>
+    (currentIndex - 1 + length) % length;
+
+  const nextImage = () => {
+    currentIndex.current = getNextIndex(currentIndex.current, images.length);
+
+    imageRefs.current[currentIndex.current].current.focus();
+
+    console.log(`Focused on image index: ${currentIndex.current}`);
+    updateImageVisibility();
+  };
+
+  const previousImage = () => {
+    currentIndex.current = getPrevIndex(currentIndex.current, images.length);
+
+    imageRefs.current[currentIndex.current].current.focus();
+    updateImageVisibility();
+  };
+
+  const updateImageVisibility = () => {
+    imageRefs.current.forEach((ref, index) => {
+      if (ref.current) {
+        ref.current.style.display =
+          index === currentIndex.current ? "block" : "none";
+      }
+    });
+  };
+
+  useEffect(() => {
+    updateImageVisibility();
+  }, []);
+
+  return (
+    <div>
+      {images.map((src, index) => (
+        <img
+          key={index}
+          src={src}
+          alt={`Image ${index + 1}`}
+          ref={imageRefs.current[index]}
+          tabIndex={0}
+          style={{
+            display: currentIndex.current === index ? "block" : "none",
+            height: 250,
+            width: 250,
+          }}
+        />
+      ))}
+
+      <br />
+      <button onClick={nextImage} style={{ margin: "10px", padding: "10px" }}>
+        Next
+      </button>
+      <br />
+      <button
+        onClick={previousImage}
+        style={{ margin: "10px", padding: "10px" }}
+      >
+        Previous
+      </button>
+    </div>
+  );
+};
+
+export default App;
+*/
+// The useRef hook is used:
+// 1) to access the DOM elements directly
+/*
+const App = () => {
+  const currentFocus = useRef();
+
+  const handleFocus = () => {
+    currentFocus.current.focus();
+    console.log("Input is focused.");
+  };
+
+  const handleSelect = () => {
+    currentFocus.current.select();
+    console.log("Input is selected.");
+    console.log(currentFocus.current.value);
+  };
+
+  const clearSelected = () => {
+    currentFocus.current.value = "";
+    console.log("Input is cleared.");
+  };
+  return (
+    <div>
+      <input type="text" ref={currentFocus} placeholder="Type something..." />
+      <br />
+      <button onClick={handleFocus} style={{ margin: "10px", padding: "10px" }}>
+        Focus
+      </button>
+      <br />
+      <button
+        onClick={handleSelect}
+        style={{ margin: "10px", padding: "10px" }}
+      >
+        Select
+      </button>
+      <br />
+      <button
+        onClick={clearSelected}
+        style={{ margin: "10px", padding: "10px" }}
+      >
+        Clear
+      </button>
+    </div>
+  );
+};
+
+export default App;*/
+
+//2) to store a mutable value that doesn't cause re-renders
+/*
+const App = () => {
+  const [timer, setTimer] = useState(0);
+  const count = useRef(null);
+
+  const startCount = () => {
+    if (!count.current) {
+      count.current = setInterval(() => {
+        setTimer((prev) => prev + 1);
+      }, 1000);
+    }
+  };
+
+  const stopCount = () => {
+    if (count.current) {
+      clearInterval(count.current);
+      count.current = null;
+    }
+  };
+
+  const resetCount = () => {
+    stopCount();
+    setTimer(0);
+  };
+
+  console.log(count.current);
+
+  useEffect(() => {
+    return () => {
+      if (count.current) {
+        clearInterval(count.current);
+      }
+    };
+  }, []);
+
+  return (
+    <div>
+      {timer}
+      <br />
+      <button onClick={startCount}>Start</button>
+      <br />
+      <button onClick={stopCount}>Stop</button>
+      <br />
+      <button onClick={resetCount}>Reset</button>
+    </div>
+  );
+};
+
+export default App;
+
+
+const App = () => {
+  const renderCount = useRef(0);
+  const [name, setName] = useState("");
+
+  renderCount.current++;
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder="Type you name"
+      />
+      <p>Your name is: {name}</p>
+      <p>
+        This component has rendered <strong>{renderCount.current}</strong>{" "}
+        times.
+      </p>
+    </div>
+  );
+};
+
+export default App;
+
+
+const Greeting = memo(({ name }) => {
+  console.log("Greeting rendered");
+  return <h2>Hello, {name}!</h2>;
+});
+
+const App = () => {
+  const [count, setCount] = useState(0);
+
+  const handleCount = () => {
+    setCount((prev) => prev + 1);
+    console.log("count rendered");
+  };
+
+  return (
+    <div>
+      <Greeting name="Bob" />
+      <button onClick={handleCount}>Increment: {count}</button>
+    </div>
+  );
+};
+
+export default App;
+
+const ThemeContext = createContext("light");
+
+const ThemedButton = () => {
+  const theme = useContext(ThemeContext);
+  return (
+    <button
+      style={{
+        background: theme === "dark" ? "#777" : "#FFF",
+        color: theme === "dark" ? "#FFF" : "#000",
+      }}
+    >
+      Theme is {theme}
+    </button>
+  );
+};
+
+const AppWithProvider = () => {
+  return (
+    <ThemeContext.Provider value="dark">
+      <ThemedButton />
+    </ThemeContext.Provider>
+  );
+};
+
+const AppWithoutProvider = () => {
+  return <ThemedButton />;
+};
+
+const App = () => {
+  return (
+    <div>
+      <h2>With Provider:</h2>
+      <AppWithProvider />
+      <h2>Without Provider (Default Value):</h2>
+      <AppWithoutProvider />
+    </div>
+  );
+};
+
+export default App;
+
+const ThemeContext = createContext();
+
+const ThemedButton = ({ handleColor }) => {
+  const theme = useContext(ThemeContext);
+  return (
+    <div>
+      <button
+        style={{
+          background: theme === "dark" ? "#777" : "#FFF",
+          color: theme === "dark" ? "#FFF" : "#000",
+        }}
+        onClick={handleColor}
+      >
+        Toggle Themes
+      </button>
+    </div>
+  );
+};
+
+const App = () => {
+  const [color, setColor] = useState("dark");
+
+  const handleColor = () => {
+    setColor((prevColor) => (prevColor === "dark" ? "light" : "dark"));
+  };
+  return (
+    <div>
+      <ThemeContext.Provider value={color}>
+        <ThemedButton handleColor={handleColor} />
+      </ThemeContext.Provider>
+    </div>
+  );
+};
+
+export default App;
+
+
+const userContext = createContext("Zafarchik");
+
+const Greeting = () => {
+  const user = useContext(userContext);
+  return (
+    <div>
+      <h2>{`Hello, my name is ${user}`}</h2>
+    </div>
+  );
+};
+
+const AnotherGreeting = () => {
+  return <Greeting />;
+};
+
+const App = () => {
+  const [name, setName] = useState("Sarvinoz");
+  return (
+    <div>
+      <Greeting />
+      <userContext.Provider value={name}>
+        <AnotherGreeting />
+      </userContext.Provider>
+    </div>
+  );
+};
+
+export default App;
+*/
+const UserContext = createContext();
+
+const LoginButton = ({ handleLogin }) => {
+  const logged = useContext(UserContext);
+  //console.log(logged);
+  return (
+    <div>
+      <button onClick={handleLogin}>
+        {logged.isAuthenticated ? "Logout" : "Login"}
+      </button>
+    </div>
+  );
+};
+
+const UserGreeting = () => {
+  const loggedUser = useContext(UserContext);
+  console.log(loggedUser);
+  return (
+    <div>
+      {loggedUser.isAuthenticated
+        ? `Welcome, ${loggedUser.username}!`
+        : "Please log in."}
+    </div>
+  );
+};
+
+const UsernameInput = ({ name, handleName }) => (
+  <input
+    type="text"
+    onChange={handleName}
+    value={name}
+    style={{ margin: 10 }}
+    required
+  />
+);
+
+const App = () => {
+  const [logging, setLogging] = useState({
+    isAuthenticated: false,
+    username: "",
+  });
+  const [name, setName] = useState("");
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    if (!logging.isAuthenticated && name.trim() === "") {
+      alert("Please enter a username before logging in.");
+      return;
+    }
+
+    setLogging((prev) => ({
+      ...prev,
+      isAuthenticated: !prev.isAuthenticated,
+      username: prev.isAuthenticated ? "" : name.trim(),
+    }));
+    setName("");
+  };
+
+  const handleName = (e) => {
+    setName(e.target.value);
+  };
+
+  return (
+    <div>
+      <UserContext.Provider value={logging}>
+        <UserGreeting />
+        {!logging.isAuthenticated && (
+          <UsernameInput name={name} handleName={handleName} />
+        )}
+
+        <LoginButton handleLogin={handleLogin} />
+      </UserContext.Provider>
     </div>
   );
 };
