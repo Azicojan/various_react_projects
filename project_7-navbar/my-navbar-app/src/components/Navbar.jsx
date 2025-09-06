@@ -2,6 +2,10 @@ import '../styles/navbar.css'
 import React from 'react'
 import { useState } from 'react'
 import links from './navbarLinks'
+import LoginButton from './LoginButton'
+import LogoutButton from './LogoutButton'
+import Profile from './Profile'
+import { Auth0Provider } from '@auth0/auth0-react';
 
 
 const Navbar= ()=>{
@@ -38,6 +42,9 @@ const Navbar= ()=>{
              <button className='link'>Contact Us</button>
              <button className={`signup${isShown ? 'hidden':'shown'}`}>Sign Up</button>
         </div>
+        <LoginButton/>
+        <LogoutButton />
+        <Profile />
         </>
        
     )

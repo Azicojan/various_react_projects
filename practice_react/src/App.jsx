@@ -1,4 +1,5 @@
 import React from "react";
+import { createPortal } from "react-dom";
 import {
   useState,
   useCallback,
@@ -7,6 +8,10 @@ import {
   memo,
   createContext,
   useContext,
+  useLayoutEffect,
+  useImperativeHandle,
+  forwardRef,
+  ReactDOM,
 } from "react";
 import "./App.css";
 import axios from "axios";
@@ -2436,7 +2441,7 @@ const App = () => {
 };
 
 export default App;
-*/
+
 const UserContext = createContext();
 
 const LoginButton = ({ handleLogin }) => {
@@ -2511,6 +2516,280 @@ const App = () => {
         <LoginButton handleLogin={handleLogin} />
       </UserContext.Provider>
     </div>
+  );
+};
+
+export default App;
+
+
+const CartContext = createContext();
+
+const ProductList = () => {
+  const { products, addToCart } = useContext(CartContext);
+
+  //console.log(products);
+  return (
+    <div>
+      <h3>Available Products</h3>
+      <ul style={{ listStyle: "decimal", textAlign: "left" }}>
+        {products.map((item) => (
+          <li key={item.id}>
+            <span
+              style={{
+                display: "inline-block",
+                width: 60,
+                padding: 20,
+              }}
+            >
+              {item.name}
+            </span>
+            <button onClick={() => addToCart(item.id)}>Add to Cart</button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+const Cart = () => {
+  const { chosenItems, clearCart } = useContext(CartContext);
+
+  const totalPrice = () => {
+    return chosenItems.reduce((a, b) => a + b.price * b.quantity, 0);
+  };
+
+  return (
+    <div>
+      <h3>Cart</h3>
+      <ul style={{ listStyle: "none" }}>
+        {chosenItems.length === 0 ? (
+          <p>Your cart is empty.</p>
+        ) : (
+          chosenItems.map((item) => (
+            <li key={item.id}>
+              {item.name} - {item.price}$/kg (x{item.quantity})
+            </li>
+          ))
+        )}
+      </ul>
+      <h4>Total price:{totalPrice()} $</h4>
+      <button onClick={clearCart} style={{ padding: 10 }}>
+        Clear Cart
+      </button>
+    </div>
+  );
+};
+
+const App = () => {
+  const listOfProducts = [
+    { id: 1, name: "Apple", price: 2 },
+    { id: 2, name: "Banana", price: 5 },
+    { id: 3, name: "Peach", price: 8 },
+    { id: 4, name: "Orange", price: 10 },
+  ];
+
+  const [products, setProducts] = useState(listOfProducts);
+  const [chosenItems, setChosenItems] = useState([]);
+
+  const addToCart = (itemId) => {
+    setChosenItems((prev) => {
+      const existingItem = prev.find((item) => item.id === itemId);
+      if (existingItem) {
+        return prev.map((item) =>
+          item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item
+        );
+      }
+      const newItem = products.find(({ id }) => id === itemId);
+      return [...prev, { ...newItem, quantity: 1 }];
+    });
+  };
+
+  //console.log(chosenItems);
+
+  const clearCart = () => {
+    setChosenItems([]);
+  };
+
+  return (
+    <div>
+      <CartContext.Provider
+        value={{ products, chosenItems, addToCart, clearCart }}
+      >
+        <ProductList />
+        <Cart />
+      </CartContext.Provider>
+    </div>
+  );
+};
+
+export default App;
+
+
+const App = () => {
+  const inputRef = useRef();
+
+  const handleSubmit = () => {
+    alert(`Input value: ${inputRef.current.value}`);
+    inputRef.current.value = "";
+  };
+  return (
+    <React.Fragment>
+      <input type="text" ref={inputRef} />
+      <button onClick={handleSubmit}>Submit</button>
+    </React.Fragment>
+  );
+};
+
+export default App;
+
+
+const App = () => {
+  const [size, setSize] = useState(0);
+
+  useEffect(() => {
+    const width = document.getElementById("myDiv").offsetWidth;
+    console.log("Width measured with useEffect:", width);
+    setSize(width);
+  }, []);
+
+  return (
+    <div id="myDiv" style={{ width: size + 10 }}>
+      Hello, world!
+    </div>
+  );
+};
+
+export default App;
+
+
+const App = () => {
+  const [size, setSize] = useState(0);
+
+  useLayoutEffect(() => {
+    const width = document.getElementById("myDiv").offsetWidth;
+    console.log("Width measured with useLayoutEffect:", width);
+    setSize(width);
+  }, []);
+
+  return (
+    <div id="myDiv" style={{ width: size + 10 }}>
+      Hello, world!
+    </div>
+  );
+};
+
+export default App;
+
+function App() {
+  useEffect(() => {
+    console.log("Effect runs after every render.");
+  }, []);
+
+  return (
+    <div>
+      Hello, world!
+      <Greeting />
+      <Today />
+    </div>
+  );
+}
+
+const Greeting = function () {
+  return <div>How is it going?</div>;
+};
+
+const Today = () => {
+  return <div>How are you doing today?</div>;
+};
+
+export default App;
+
+
+const Wrapper = ({ children }) => {
+  return (
+    <div>
+      {React.Children.map(children, (child) =>
+        child.type === "h1"
+          ? React.cloneElement(child, { style: { color: "blue" } })
+          : child
+      )}
+    </div>
+  );
+};
+
+const App = () => {
+  return (
+    <Wrapper>
+      <h1>Title</h1>
+      <p>Some text</p>
+    </Wrapper>
+  );
+};
+
+export default App;
+
+const ChildComponent = forwardRef((props, ref) => {
+  const inputRef = useRef();
+
+  useImperativeHandle(ref, () => ({
+    focusInput: () => {
+      inputRef.current.focus();
+    },
+    clearInput: () => {
+      inputRef.current.value = "";
+    },
+  }));
+
+  return <input ref={inputRef} type="text" />;
+});
+
+function App() {
+  const childRef = useRef();
+  return (
+    <div>
+      <ChildComponent ref={childRef} />
+      <button onClick={() => childRef.current.focusInput()}>Focus Input</button>
+      <button onClick={() => childRef.current.clearInput()}>Clear Input</button>
+    </div>
+  );
+}
+
+export default App;
+
+
+const Modal = ({ children }) => {
+  return createPortal(
+    <div className="modal">{children}</div>,
+    document.getElementById("modal-root")
+  );
+};
+
+const App = () => {
+  const handleClick = () => {
+    console.log("Parent Clicked!");
+  };
+  return (
+    <div onClick={handleClick}>
+      <h1>Main App</h1>
+      <Modal>
+        <p>This is rendered via a React Portal!</p>
+        <button>Click Me</button>
+      </Modal>
+    </div>
+  );
+};
+
+export default App;
+*/
+
+const App = () => {
+  return (
+    <form>
+      <label>
+        Do you agree?
+        <input type="checkbox" defaultChecked={true} />
+      </label>
+    </form>
   );
 };
 
